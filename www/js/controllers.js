@@ -200,7 +200,14 @@ angular.module('starter.controllers', [])
 
 		// Insertar una fila en una tabla seleccionada en local
 		$scope.insertRow = function (row, table) {
-
+			db.transaction(function (tx) {
+				tx.executeSql('INSERT INTO ' + table + ' VALUES (?)', [value.name]);
+			}, function (error) {
+				console.log('Transaction ERROR: ' + error.message);
+			}, function () {
+				console.log(name + ' inserted');
+				$window.location.reload();
+			});
 		}
 
 
