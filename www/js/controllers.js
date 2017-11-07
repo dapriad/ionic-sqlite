@@ -97,14 +97,17 @@ angular.module('starter.controllers', [])
 
 
 
-
-
+		////////////////////////////////////////////////////////////////////
+		// RECORDAR CAMBIAR VALUES DE PLAYLIST A LA HORA DE MIGRAR A APP///
+		//////////////////////////////////////////////////////////////////
+		// Funciom que inicia la base de datos y crea las tablas/////////
 		$scope.initDB = function () {
 			//Init Bd
 			db = window.openDatabase("Db.db", "1.0", "Demo", 2000);
 
 			// Init tables
 			db.transaction(function (tx) {
+				//Aqui las tablas que quiera
 				tx.executeSql('CREATE TABLE IF NOT EXISTS playlist (namePlaylist)');
 				tx.executeSql('CREATE TABLE IF NOT EXISTS entrances (entranceId integer PRIMARY KEY, name string, surname string, nameEntrance string, _date CURRENT_DATE)');
 				tx.executeSql('INSERT INTO entrances VALUES (?, ?, ?, ?, ?)', [12345, "Alice", "O'Connell", "Advanced Ticket"]);
@@ -116,7 +119,7 @@ angular.module('starter.controllers', [])
 				console.log('All inserted');
 			});
 		}
-
+		//Devuelve las tablas seleccionadas desde local
 		$scope.selectDataLocal = function (table) {
 			tx.executeSql('SELECT * FROM ' + table, [], function (tx, rs) {
 				// Campos en external diferentes de local
@@ -126,12 +129,13 @@ angular.module('starter.controllers', [])
 			});
 		}
 
-		$scope.SyncFromBd = function (data) {
+		//Funcion que compara datos pasados desde server con los de local y los actualiza
+		$scope.SyncFromBd = function (data, table) {
 			var match = false;
 			var items_to_push = [];
 
 			db.transaction(function (tx) {
-				tx.executeSql('SELECT * FROM playlist', [], function (tx, rs) {
+				tx.executeSql('SELECT * FROM ' + table, [], function (tx, rs) {
 					// Campos en external diferentes de local
 					_.each(data, function (value) {
 						match = false;
@@ -147,17 +151,18 @@ angular.module('starter.controllers', [])
 								name: value
 							});
 					});
-					$scope.pushItemsLocal(items_to_push);
+					$scope.pushItemsLocal(items_to_push, table);
 				}, function (tx, error) {
 					console.log('SELECT error: ' + error.message);
 				});
 			});
 		}
-
-		$scope.SyncFromLocal = function (data) {
+		//Funcion que compara datos que hay en local diferentes de server y los devuelve
+		//Es por si hay datos subidos en local que aun no se han subido a server
+		$scope.SyncFromLocal = function (data, table) {
 			var match = false;
 			db.transaction(function (tx) {
-				tx.executeSql('SELECT * FROM playlist', [], function (tx, rs) {
+				tx.executeSql('SELECT * FROM ' + table, [], function (tx, rs) {
 					// Campos en local diferentes de la bd
 					_.each(rs.rows, function (value) {
 						match = false;
@@ -172,18 +177,18 @@ angular.module('starter.controllers', [])
 							items_to_push.push({
 								name: value.namePlaylist
 							});
-						$scope.pushItemsLocal(items_to_push);
+						return items_to_push;
 					});
 				}, function (tx, error) {
 					console.log('SELECT error: ' + error.message);
 				});
 			});
 		}
-
-		$scope.pushItemsLocal = function (items_to_push) {
+		// Funcion que inserta un array de datos en una tabla 
+		$scope.pushItemsLocal = function (items_to_push, table) {
 			_.each(items_to_push, function (value) {
 				db.transaction(function (tx) {
-					tx.executeSql('INSERT INTO playlist VALUES (?)', [value.name]);
+					tx.executeSql('INSERT INTO ' + table + ' VALUES (?)', [value.name]);
 				}, function (error) {
 					console.log('Transaction ERROR: ' + error.message);
 				}, function () {
@@ -193,7 +198,8 @@ angular.module('starter.controllers', [])
 			});
 		}
 
-		$scope.insertRow = function () {
+		// Insertar una fila en una tabla seleccionada en local
+		$scope.insertRow = function (row, table) {
 
 		}
 
