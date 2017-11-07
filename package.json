@@ -1,0 +1,24 @@
+{
+  "name": "ionic-sqlite",
+  "version": "1.1.1",
+  "description": "ionic-sqlite: An Ionic project",
+  "devDependencies": {
+    "gulp": "^3.5.6",
+    "gulp-clean-css": "^3.7.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-sass": "^3.1.0"
+  },
+  "cordovaPlugins": [
+    "cordova-plugin-whitelist",
+    "cordova-plugin-statusbar",
+    "cordova-plugin-console",
+    "cordova-plugin-device",
+    "cordova-plugin-splashscreen",
+    "ionic-plugin-keyboard"
+  ],
+  "cordovaPlatforms": [],
+  "dependencies": {
+    "@ionic-native/core": "^4.3.3",
+    "ionic-native": "^2.9.0"
+  }
+}
