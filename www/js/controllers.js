@@ -1,6 +1,6 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['xpSqlite'])
 
-	.controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
+	.controller('AppCtrl', function ($scope, $ionicModal, $timeout, xpSqlite) {
 
 		var db = null;
 
@@ -161,6 +161,7 @@ angular.module('starter.controllers', [])
 		//Es por si hay datos subidos en local que aun no se han subido a server
 		$scope.SyncFromLocal = function (data, table) {
 			var match = false;
+			
 			db.transaction(function (tx) {
 				tx.executeSql('SELECT * FROM ' + table, [], function (tx, rs) {
 					// Campos en local diferentes de la bd
