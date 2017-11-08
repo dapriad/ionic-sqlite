@@ -183,6 +183,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic.native', 'ngCo
 				views: {
 					'menuContent': {
 						templateUrl: 'templates/browse.html'
+						controller: 'SynchronizeCtrl'
 					}
 				}
 			})
