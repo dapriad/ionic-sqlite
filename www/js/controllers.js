@@ -248,6 +248,11 @@ angular.module('starter.controllers', ['xpSqlite'])
 		});
 	})
 
+	.controller('SynchronizeCtrl', function ($scope, $timeout) {
+	
+		
+	})
+
 	.controller('PlaylistCtrl', function ($scope, $window) {
 		db = window.openDatabase("Db.db", "1.0", "Demo", 2000);
 		$scope.insert = function (name) {
