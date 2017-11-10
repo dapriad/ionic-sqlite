@@ -110,7 +110,7 @@ angular
 						});
 					},
 					// Insertar una fila en una tabla seleccionada en local
-					insertRow: function (row, table) {
+					insertRow: function (row, table, ) {
 						db.transaction(function (tx) {
 							tx.executeSql('INSERT INTO ' + table + ' VALUES (?)', [value.name]);
 						}, function (error) {
