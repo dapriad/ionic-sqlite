@@ -1,7 +1,7 @@
 angular
 	.module('xpSqlite', [])
-	.service('xpSqlite', ['$rootScope',
-		function ($rootScope) {
+	.service('xpSqlite', ['$rootScope', '$q',
+		function ($rootScope, $q) {
 			var that = this;
 			return {
 				xpSqlite: {
@@ -24,13 +24,21 @@ angular
 					},
 					//Devuelve las tablas seleccionadas desde local
 					selectDataLocal: function (table) {
-						tx.executeSql('SELECT * FROM ' + table, [], function (tx, rs) {
-							// Campos en external diferentes de local
-							return rs.rows;
-						}, function (tx, error) {
-							console.log('SELECT error: ' + error.message);
-							return null;
-						});
+						var defered = $q.defer();
+						var promise = defered.promise;
+
+						db.transaction(function (tx) {
+							tx.executeSql('SELECT * FROM ' + table, [], function (tx, rs) {
+								defered.resolve(rs.rows);
+								// Campos en external diferentes de local
+								// return rs.rows;
+							}, function (tx, error) {
+								console.log('SELECT error: ' + error.message);
+								defered.reject(error.message);
+								// return null;
+							});
+						})
+						return promise;
 					},
 					//Funcion que compara datos pasados desde server con los de local y los actualiza
 					SyncFromBd: function (data, table) {
